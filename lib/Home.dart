@@ -24,7 +24,6 @@ class ScrollablePages extends StatefulWidget {
 
 class _ScrollablePagesState extends State<ScrollablePages> {
   final PageController _controller = PageController();
-  int _currentPage = 0;
 
   @override
   void dispose() {
@@ -38,11 +37,7 @@ class _ScrollablePagesState extends State<ScrollablePages> {
       body: PageView(
         controller: _controller,
         scrollDirection: Axis.vertical,
-        onPageChanged: (int page) {
-          setState(() {
-            _currentPage = page;
-          });
-        },
+        onPageChanged: (int page) {},
         children: [
           const HomePage(),
           _buildAboutPage(),
