@@ -64,93 +64,90 @@ class ContactPage extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(40),
-                child: Text(
-                  'CONTACT',
-                  style: GoogleFonts.abrilFatface(
-                    fontSize: 48,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 40),
-              Padding(
-                padding: EdgeInsets.all(40),
-                child: Column(
-                  children: [
-                    Icon(Icons.email, size: 80, color: Colors.white),
-                    const SizedBox(height: 30),
-                    Text(
-                      'Let\'s work together!',
-                      style: GoogleFonts.abrilFatface(
-                        fontSize: 28,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Get in touch for opportunities',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 40),
-              Padding(
-                padding: EdgeInsets.all(40),
-                child: Row(
-                  children: [
-                    SizedBox(width: 300),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: const FaIcon(
-                          FontAwesomeIcons.linkedin,
-                          color: Colors.black,
-                          size: 30,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(40),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isMobile = constraints.maxWidth < 800;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(40),
+                        child: Text(
+                          'CONTACT',
+                          style: GoogleFonts.abrilFatface(
+                            fontSize: 48,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: const FaIcon(
-                          FontAwesomeIcons.github,
-                          color: Colors.black,
-                          size: 30,
+                      const SizedBox(height: 40),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(40),
+                          child: Column(
+                            mainAxisSize:
+                                MainAxisSize.min, // keeps column tight
+                            children: [
+                              Icon(Icons.email, size: 80, color: Colors.white),
+                              const SizedBox(height: 30),
+                              Text(
+                                'Let\'s work together!',
+                                style: GoogleFonts.abrilFatface(
+                                  fontSize: 28,
+                                  color: Colors.white,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                'Get in touch for opportunities',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white.withOpacity(0.8),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 80),
+                      Row(
+                        mainAxisAlignment: isMobile
+                            ? MainAxisAlignment.start
+                            : MainAxisAlignment.start,
+                        children: [
+                          _socialButton(FontAwesomeIcons.linkedin),
+                          const SizedBox(width: 12),
+                          _socialButton(FontAwesomeIcons.github),
+                        ],
+                      ),
+                    ],
+                  );
+                },
               ),
-            ],
+            ),
           ),
         ),
-        // ],
+      ),
+    );
+  }
+
+  Widget _socialButton(IconData icon) {
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        onPressed: () {},
+        icon: FaIcon(icon, color: Colors.black, size: 28),
       ),
     );
   }
