@@ -13,9 +13,9 @@ class Meteor {
     : startX = Random().nextDouble() * size.width,
       startY = -50,
       delay = Random().nextDouble(),
-      duration = 1.0 + Random().nextDouble() * 2.0 {
-    endX = startX + cos(angle) * size.width * 0.3; // Less horizontal movement
-    endY = size.height + 50; // Go all the way to bottom + extra
+      duration = 0.3 + Random().nextDouble() * 0.7 {
+    endX = startX + cos(angle) * size.width * 0.3;
+    endY = size.height + 50;
   }
 }
 
@@ -24,14 +24,13 @@ class MeteorDemo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
 
     return Stack(
       alignment: Alignment.center,
       children: [
         MeteorShower(
-          numberOfMeteors: 10,
+          numberOfMeteors: 20,
           duration: const Duration(seconds: 5),
           meteorColor: theme.primaryColor,
           child: Container(
@@ -92,11 +91,7 @@ class MeteorPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(
-      Offset(size.width / 2, size.height),
-      2,
-      circlePaint,
-    ); // Bigger circle
+    canvas.drawCircle(Offset(size.width / 2, size.height), 2, circlePaint);
   }
 
   @override
@@ -160,7 +155,7 @@ class _MeteorShowerState extends State<MeteorShower>
                       child: Transform.rotate(
                         angle: 315 * (pi / 180),
                         child: CustomPaint(
-                          size: const Size(5, 50), // Bigger meteors
+                          size: const Size(5, 50),
                           painter: MeteorPainter(widget.meteorColor),
                         ),
                       ),
@@ -189,7 +184,6 @@ class _MeteorShowerState extends State<MeteorShower>
   }
 
   void _initializeMeteors(Size size) {
-    // Remove the if check so meteors recalculate on size changes
     _meteors = List.generate(
       widget.numberOfMeteors,
       (_) => Meteor(meteorAngle, size),

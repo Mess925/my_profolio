@@ -29,8 +29,6 @@ class ScrollablePages extends StatefulWidget {
 
 class _ScrollablePagesState extends State<ScrollablePages> {
   final PageController _controller = PageController();
-  // int _currentPage = 0;
-
   @override
   void dispose() {
     _controller.dispose();
@@ -53,11 +51,6 @@ class _ScrollablePagesState extends State<ScrollablePages> {
       body: PageView(
         controller: _controller,
         scrollDirection: Axis.vertical,
-        // onPageChanged: (int page) {
-        //   setState(() {
-        //     _currentPage = page;
-        //   });
-        // },
         children: [
           HomePage(onNavigate: _navigateToPage),
           const AboutMePage(),
@@ -74,12 +67,7 @@ class _ScrollablePagesState extends State<ScrollablePages> {
       actions: <Widget>[
         _NavButton(label: 'HOME', onPressed: () => _navigateToPage(0)),
         _NavButton(label: 'ABOUT ME', onPressed: () => _navigateToPage(1)),
-        _NavButton(
-          label: 'PROJECTS',
-          onPressed: () {
-            // TODO: Implement projects page
-          },
-        ),
+        _NavButton(label: 'PROJECTS', onPressed: () {}),
       ],
     );
   }
@@ -138,7 +126,6 @@ class PhotoSection extends StatelessWidget {
             'assets/images/a.jpeg',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
-              // Placeholder when image is not found
               return Container(
                 color: Colors.white.withOpacity(0.1),
                 child: Center(
