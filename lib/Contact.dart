@@ -46,11 +46,11 @@ class ContactPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildTitle(55, isMobile, isTablet),
+        _buildTitle(30, isMobile, isTablet),
         const SizedBox(height: 20),
-        _buildContactCard(40, 16, isMobile, isTablet),
+        _buildContactCard(25, 16, isMobile, isTablet),
         const SizedBox(height: 40),
-        SocialButtonsRow(isMobile: isMobile),
+        SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
       ],
     );
   }
@@ -58,9 +58,9 @@ class ContactPage extends StatelessWidget {
   Widget _buildDesktopLayout(bool isMobile, bool isTablet) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
+        Flexible(
           child: Padding(
             padding: const EdgeInsets.only(left: 80),
             child: Column(
@@ -69,7 +69,7 @@ class ContactPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildTitle(
-                  getFontSize(55, 60, 70, isMobile, isTablet),
+                  getFontSize(25, 30, 50, isMobile, isTablet),
                   isMobile,
                   isTablet,
                 ),
@@ -79,8 +79,10 @@ class ContactPage extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
-          child: Center(child: SocialButtonsRow(isMobile: isMobile)),
+        const SizedBox(width: 60),
+        Flexible(
+          flex: 1,
+          child: SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
         ),
       ],
     );
@@ -90,11 +92,7 @@ class ContactPage extends StatelessWidget {
     return Text(
       'CONTACT',
       textAlign: TextAlign.start,
-      style: GoogleFonts.abrilFatface(
-        fontSize: fontSize,
-        color: Colors.white,
-        fontWeight: FontWeight.bold,
-      ),
+      style: GoogleFonts.abrilFatface(fontSize: fontSize, color: Colors.white),
     );
   }
 
@@ -106,7 +104,7 @@ class ContactPage extends StatelessWidget {
   ) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 30 : 20,
+        horizontal: isMobile ? 20 : 20,
         vertical: 40,
       ),
       decoration: _cardDecoration(),
@@ -187,13 +185,3 @@ ideas. Send me an E-mail with your details at ''',
     }
   }
 }
-
-
-
-// Text(
-//                   link.label,
-//                   style: GoogleFonts.roboto(
-//                     fontSize: isMobile ? 14 : 16,
-//                     color: Colors.white.withOpacity(0.85),
-//                   ),
-//                 ),

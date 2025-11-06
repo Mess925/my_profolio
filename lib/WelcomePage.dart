@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:portfolio/Projects.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Contact.dart';
 import 'Home.dart';
+// import 'Projects.dart';
 import 'Helper.dart';
 
 class MyApp extends StatelessWidget {
@@ -53,6 +55,7 @@ class _ScrollablePagesState extends State<ScrollablePages> {
         scrollDirection: Axis.vertical,
         children: [
           HomePage(onNavigate: _navigateToPage),
+          const ProjectPage(),
           const ContactPage(),
         ],
       ),
@@ -66,8 +69,8 @@ class _ScrollablePagesState extends State<ScrollablePages> {
       toolbarHeight: 60,
       actions: <Widget>[
         _NavButton(label: 'HOME', onPressed: () => _navigateToPage(0)),
-        _NavButton(label: 'PROJECTS', onPressed: () {}),
-        _NavButton(label: 'CONTACT', onPressed: () => _navigateToPage(1)),
+        _NavButton(label: 'PROJECTS', onPressed: () => _navigateToPage(1)),
+        _NavButton(label: 'CONTACT', onPressed: () => _navigateToPage(2)),
       ],
     );
   }
@@ -292,7 +295,6 @@ class HeroSection extends StatelessWidget {
                 );
               }).toList(),
             ),
-            // _SocialButtonsRow(isMobile: isMobile),
           ],
         ),
       ),
@@ -302,8 +304,9 @@ class HeroSection extends StatelessWidget {
 
 class SocialButtonsRow extends StatelessWidget {
   final bool isMobile;
+  final bool isTablet;
 
-  const SocialButtonsRow({required this.isMobile});
+  const SocialButtonsRow({required this.isMobile, required this.isTablet});
 
   Future<void> _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
@@ -314,45 +317,98 @@ class SocialButtonsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final personalLinks = [
+      SocialLink(
+        icon: FontAwesomeIcons.instagram,
+        url: 'https://www.instagram.com/yourprofile',
+        label: 'Instagram',
+      ),
+      SocialLink(
+        icon: FontAwesomeIcons.github,
+        url: 'https://github.com/Mess925',
+        label: 'GitHub',
+      ),
+      SocialLink(
+        icon: FontAwesomeIcons.phone,
+        url: 'tel:+1234567890',
+        label: 'Phone',
+      ),
+    ];
+
+    final professionalLinks = [
+      SocialLink(
+        icon: FontAwesomeIcons.link,
+        url: 'https://linktr.ee/yourprofile',
+        label: 'LinkTree',
+      ),
+      SocialLink(
+        icon: FontAwesomeIcons.envelope,
+        url: 'mailto:hanminthant222@gmail.com',
+        label: 'E-Mail',
+      ),
+      SocialLink(
+        icon: FontAwesomeIcons.linkedin,
+        url: 'https://www.linkedin.com/in/han-min-thant-0b051a283/',
+        label: 'LinkedIn',
+      ),
+    ];
+
+    if (isMobile || isTablet) {
+      // Mobile: 2 columns, stacked vertically
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildColumn('Personal', personalLinks),
+          const SizedBox(width: 32),
+          _buildColumn('Professional', professionalLinks),
+        ],
+      );
+    } else {
+      // Desktop: stacked rows horizontally
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildRow('Personal', personalLinks),
+          SizedBox(height: isMobile ? 24 : 32),
+          _buildRow('Professional', professionalLinks),
+        ],
+      );
+    }
+  }
+
+  Widget _buildColumn(String header, List<SocialLink> links) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildRow('Personal', [
-          SocialLink(
-            icon: FontAwesomeIcons.instagram,
-            url: 'https://www.instagram.com/yourprofile',
-            label: 'LinkedIn',
+        Text(
+          header,
+          style: GoogleFonts.abrilFatface(
+            fontSize: 18,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
-          SocialLink(
-            icon: FontAwesomeIcons.phone,
-            url: 'tel:+1234567890',
-            label: 'Phone',
+        ),
+        for (var link in links)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Row(
+              children: [
+                _SocialButton(
+                  icon: link.icon,
+                  isMobile: true,
+                  onTap: () => _launchURL(link.url),
+                ),
+                Text(
+                  link.label,
+                  style: GoogleFonts.roboto(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.85),
+                  ),
+                ),
+              ],
+            ),
           ),
-          SocialLink(
-            icon: FontAwesomeIcons.github,
-            url: 'https://github.com/Mess925',
-            label: 'GitHub',
-          ),
-        ]),
-        SizedBox(height: isMobile ? 24 : 32),
-        _buildRow('Professional', [
-          SocialLink(
-            icon: FontAwesomeIcons.link,
-            url: 'https://linktr.ee/yourprofile',
-            label: 'LinkTree',
-          ),
-          SocialLink(
-            icon: FontAwesomeIcons.envelope,
-            url: 'mailto:hanminthant222@gmail.com',
-            label: 'E-Mail',
-          ),
-          SocialLink(
-            icon: FontAwesomeIcons.linkedin,
-            url: 'https://www.linkedin.com/in/han-min-thant-0b051a283/',
-            label: 'LinkedIn',
-          ),
-        ]),
       ],
     );
   }
@@ -363,32 +419,32 @@ class SocialButtonsRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: isMobile ? 120 : 150,
+          width: 130,
           child: Text(
             header,
             style: GoogleFonts.abrilFatface(
-              fontSize: isMobile ? 18 : 22,
+              fontSize: 22,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
-        SizedBox(width: isMobile ? 16 : 24),
+        const SizedBox(width: 20),
         ...links.map(
           (link) => Padding(
-            padding: EdgeInsets.only(right: isMobile ? 12 : 16),
+            padding: const EdgeInsets.only(right: 16),
             child: Row(
               children: [
                 _SocialButton(
                   icon: link.icon,
-                  isMobile: isMobile,
+                  isMobile: false,
                   onTap: () => _launchURL(link.url),
                 ),
                 const SizedBox(width: 12),
                 Text(
                   link.label,
                   style: GoogleFonts.roboto(
-                    fontSize: isMobile ? 14 : 16,
+                    fontSize: 10,
                     color: Colors.white.withOpacity(0.85),
                   ),
                 ),
@@ -459,19 +515,6 @@ class _SocialButtonState extends State<_SocialButton> {
             color: _isHovered ? Colors.white : Colors.grey.withOpacity(0.85),
             size: iconSize,
           ),
-          tooltip: widget.icon == FontAwesomeIcons.linkedin
-              ? 'LinkedIn'
-              : widget.icon == FontAwesomeIcons.github
-              ? 'GitHub'
-              : widget.icon == FontAwesomeIcons.envelope
-              ? 'Email'
-              : widget.icon == FontAwesomeIcons.link
-              ? 'Linktree'
-              : widget.icon == FontAwesomeIcons.phone
-              ? 'Phone'
-              : widget.icon == FontAwesomeIcons.instagram
-              ? 'Instagram'
-              : '',
         ),
       ),
     );
