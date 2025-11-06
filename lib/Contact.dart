@@ -40,85 +40,80 @@ class ContactPage extends StatelessWidget {
   }
 
   Widget _buildMobileLayout(bool isMobile, bool isTablet) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'CONTACT',
-            textAlign: TextAlign.start,
-            style: GoogleFonts.abrilFatface(
-              fontSize: getFontSize(55, 60, 70, isMobile, isTablet),
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'CONTACT',
+          textAlign: TextAlign.start,
+          style: GoogleFonts.abrilFatface(
+            fontSize: getFontSize(55, 60, 70, isMobile, isTablet),
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(height: 20),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1,
+        ),
+        const SizedBox(height: 20),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 20,
+                spreadRadius: 5,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  spreadRadius: 5,
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: RichText(
-                  textAlign: TextAlign.start,
-                  text: TextSpan(
-                    style: GoogleFonts.roboto(
-                      fontSize: 16,
-                      color: Colors.white,
-                      letterSpacing: 0.5,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: 'Want to Develop a Mobile App?\n\n',
-                        style: GoogleFonts.abrilFatface(
-                          fontSize: 40,
-                          color: Colors.white,
-                        ),
-                      ),
-                      TextSpan(
-                        text:
-                            'I am currently prioritizing projects in social, education and new ideas. Send me an E-mail with your details at ',
-                      ),
-                      TextSpan(
-                        text: 'hanminthant222@gmail.com',
-                        style: GoogleFonts.roboto(
-                          fontSize: 16,
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () =>
-                              _launchEmail('hanminthant222@gmail.com'),
-                      ),
-                    ],
+            ],
+          ),
+          child: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: RichText(
+                textAlign: TextAlign.start,
+                text: TextSpan(
+                  style: GoogleFonts.roboto(
+                    fontSize: 16,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
                   ),
+                  children: [
+                    TextSpan(
+                      text: 'Want to Develop a Mobile App?\n\n',
+                      style: GoogleFonts.abrilFatface(
+                        fontSize: 40,
+                        color: Colors.white,
+                      ),
+                    ),
+                    TextSpan(
+                      text:
+                          'I am currently prioritizing projects in social, education and new ideas. Send me an E-mail with your details at ',
+                    ),
+                    TextSpan(
+                      text: 'hanminthant222@gmail.com',
+                      style: GoogleFonts.roboto(
+                        fontSize: 16,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () =>
+                            _launchEmail('hanminthant222@gmail.com'),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 40),
-          SocialButtonsRow(isMobile: isMobile),
-        ],
-      ),
+        ),
+        const SizedBox(height: 40),
+        SocialButtonsRow(isMobile: isMobile),
+      ],
     );
   }
 
@@ -131,7 +126,7 @@ class ContactPage extends StatelessWidget {
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
@@ -165,10 +160,17 @@ class ContactPage extends StatelessWidget {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Want To Develop a Mobile App?',
+                            'Want To Develop a Mobile App?\n\n',
                             style: TextStyle(color: Colors.white, fontSize: 13),
+                            textAlign: TextAlign.start,
+                          ),
+                          Text(
+                            'I\'m currently prioritizing projects in consumer, education, and new hardware. Shoot me a note with your details at gabe@valdivia.works',
+                            style: TextStyle(color: Colors.white, fontSize: 13),
+                            textAlign: TextAlign.left,
                           ),
                         ],
                       ),
