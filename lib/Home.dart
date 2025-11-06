@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
                     : Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
+                          Flexible(
                             child: HeroSection(
                               isMobile: isMobile,
                               isTablet: isTablet,

@@ -330,7 +330,7 @@ class SocialButtonsRow extends StatelessWidget {
       ),
       SocialLink(
         icon: FontAwesomeIcons.phone,
-        url: 'tel:+1234567890',
+        url: 'tel:+6588247721',
         label: 'Phone',
       ),
     ];
