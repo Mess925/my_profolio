@@ -13,61 +13,9 @@ class Meteor {
     : startX = Random().nextDouble() * size.width,
       startY = -50,
       delay = Random().nextDouble(),
-      duration = 0.3 + Random().nextDouble() * 0.7 {
+      duration = 0.3 + Random().nextDouble() * 0.1 {
     endX = startX + cos(angle) * size.width * 0.3;
     endY = size.height + 50;
-  }
-}
-
-class MeteorDemo extends StatelessWidget {
-  const MeteorDemo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        MeteorShower(
-          numberOfMeteors: 20,
-          duration: const Duration(seconds: 5),
-          meteorColor: theme.primaryColor,
-          child: Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: const Color.fromARGB(255, 96, 96, 96),
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  'Meteor shower',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                    foreground: Paint()
-                      ..shader = LinearGradient(
-                        colors: [
-                          theme.primaryColor,
-                          theme.primaryColor.withOpacity(0.2),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ).createShader(const Rect.fromLTWH(0, 0, 200, 70)),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
   }
 }
 
@@ -107,7 +55,7 @@ class MeteorShower extends StatefulWidget {
   const MeteorShower({
     super.key,
     required this.child,
-    this.numberOfMeteors = 10,
+    this.numberOfMeteors = 50,
     this.duration = const Duration(seconds: 40),
     required this.meteorColor,
   });
@@ -121,60 +69,7 @@ class _MeteorShowerState extends State<MeteorShower>
   late AnimationController _controller;
   List<Meteor> _meteors = [];
   final double meteorAngle = pi / 4;
-
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = Size(constraints.maxWidth, constraints.maxHeight);
-        _initializeMeteors(size);
-
-        return Stack(
-          children: [
-            widget.child,
-            ...List.generate(widget.numberOfMeteors, (index) {
-              return AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  final meteor = _meteors[index];
-                  final progress =
-                      ((_controller.value - meteor.delay) % 1.0) /
-                      meteor.duration;
-                  if (progress < 0 || progress > 1)
-                    return const SizedBox.shrink();
-
-                  return Positioned(
-                    left:
-                        meteor.startX +
-                        (meteor.endX - meteor.startX) * progress,
-                    top:
-                        meteor.startY +
-                        (meteor.endY - meteor.startY) * progress,
-                    child: Opacity(
-                      opacity: (1 - progress) * 0.8,
-                      child: Transform.rotate(
-                        angle: 315 * (pi / 180),
-                        child: CustomPaint(
-                          size: const Size(5, 50),
-                          painter: MeteorPainter(widget.meteorColor),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  Size? _lastSize;
 
   @override
   void initState() {
@@ -183,10 +78,90 @@ class _MeteorShowerState extends State<MeteorShower>
       ..repeat();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   void _initializeMeteors(Size size) {
-    _meteors = List.generate(
-      widget.numberOfMeteors,
-      (_) => Meteor(meteorAngle, size),
+    // Only reinitialize if size changed significantly
+    if (_lastSize == null ||
+        (_lastSize!.width - size.width).abs() > 10 ||
+        (_lastSize!.height - size.height).abs() > 10) {
+      _meteors = List.generate(
+        widget.numberOfMeteors,
+        (_) => Meteor(meteorAngle, size),
+      );
+      _lastSize = size;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ensure we have valid constraints
+        final width = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width;
+        final height = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : MediaQuery.of(context).size.height;
+
+        final size = Size(width, height);
+        _initializeMeteors(size);
+
+        return ClipRect(
+          child: Stack(
+            clipBehavior: Clip.hardEdge,
+            children: [
+              widget.child,
+              ...List.generate(widget.numberOfMeteors, (index) {
+                return AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    final meteor = _meteors[index];
+                    final progress =
+                        ((_controller.value - meteor.delay) % 1.0) /
+                        meteor.duration;
+                    if (progress < 0 || progress > 1) {
+                      return const SizedBox.shrink();
+                    }
+
+                    final left =
+                        meteor.startX +
+                        (meteor.endX - meteor.startX) * progress;
+                    final top =
+                        meteor.startY +
+                        (meteor.endY - meteor.startY) * progress;
+
+                    // Ensure positioned values are valid
+                    if (!left.isFinite || !top.isFinite) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Positioned(
+                      left: left,
+                      top: top,
+                      child: Opacity(
+                        opacity: (1 - progress) * 0.8,
+                        child: Transform.rotate(
+                          angle: 315 * (pi / 180),
+                          child: CustomPaint(
+                            size: const Size(5, 50),
+                            painter: MeteorPainter(widget.meteorColor),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }),
+            ],
+          ),
+        );
+      },
     );
   }
 }

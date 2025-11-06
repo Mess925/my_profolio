@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'WelcomePage.dart';
-import 'Metorshower.dart'; // Add this import
+import 'Metorshower.dart';
 
 class HomePage extends StatelessWidget {
   final Function(int)? onNavigate;
@@ -12,49 +12,53 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return MeteorShower(
-      numberOfMeteors: 15, // More meteors for full coverage
-      duration: const Duration(seconds: 100), // Adjust speed
-      meteorColor: Colors.black.withOpacity(
-        0.6,
-      ), // White meteors on your gradient
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.white, Colors.black],
-          ),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final isMobile = constraints.maxWidth < 800;
-            final isTablet =
-                constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
-            if (isMobile) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PhotoSection(isMobile: isMobile),
-                  HeroSection(isMobile: isMobile, isTablet: isTablet),
-                ],
-              );
-            }
-            return Row(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: HeroSection(isMobile: isMobile, isTablet: isTablet),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = constraints.maxWidth < 800;
+        final isTablet =
+            constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: MeteorShower(
+              numberOfMeteors: 20,
+              duration: const Duration(seconds: 10),
+              meteorColor: Colors.red.withOpacity(0.6),
+              child: Container(
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.black, Colors.black],
                   ),
                 ),
-                Expanded(child: PhotoSection(isMobile: isMobile)),
-              ],
-            );
-          },
-        ),
-      ),
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: isMobile
+                    ? Column(
+                        children: [
+                          PhotoSection(isMobile: isMobile),
+                          HeroSection(isMobile: isMobile, isTablet: isTablet),
+                        ],
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: HeroSection(
+                              isMobile: isMobile,
+                              isTablet: isTablet,
+                            ),
+                          ),
+                          Expanded(child: PhotoSection(isMobile: isMobile)),
+                        ],
+                      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
