@@ -66219,7 +66219,7 @@ p=A.dR(l,l,i?20:30)
 o=A.dR(l,l,i?20:30)
 n=A.dR(l,l,i?20:30)
 m=t.p
-m=A.aj6(A.c([new A.c7(new A.aO(q,0,q,0),A.fo(A.c([A.dR(A.fo(A.c([new A.iY("ProtectivePath","Navigation App For Visually Impaired","images/ppth.jpg",i,l),p,new A.iY("Little Lemon","Restaurant Reservation App","images/res.jpg",i,l),o,new A.iY("MiniRT","Ray Tracing with C","images/minirt.jpg",i,l),n,new A.iY("RUN","Fitness Running App","images/r.jpg",i,l),A.dR(l,l,i?20:30),new A.iY("Webserv","A WebServer","images/project5.jpg",i,l)],m),B.R,B.aQ,B.a5),b.d-r*2-40,l)],m),B.R,B.Z,B.a5),l)],m),!0,!0,!0)
+m=A.aj6(A.c([new A.c7(new A.aO(q,0,q,0),A.fo(A.c([A.dR(A.fo(A.c([new A.iY("ProtectivePath","Navigation App For Visually Impaired","assets/images/ppth.png",i,l),p,new A.iY("Little Lemon","Restaurant Reservation App","assets/images/res.png",i,l),o,new A.iY("MiniRT","Ray Tracing with C","assets/images/minirt.png",i,l),n,new A.iY("RUN","Fitness Running App","assets/images/r.png",i,l),A.dR(l,l,i?20:30),new A.iY("Webserv","A WebServer","assets/images/project5.png",i,l)],m),B.R,B.aQ,B.a5),b.d-r*2-40,l)],m),B.R,B.Z,B.a5),l)],m),!0,!0,!0)
 return new A.c7(new A.aO(s,r,s,r),A.aiT(k,new A.DP(m,l,B.b_,!1,l,l,l,!1,l,1,B.ay,l,l,B.U,B.a9,l)),l)},
 $S:435}
 A.iY.prototype={
