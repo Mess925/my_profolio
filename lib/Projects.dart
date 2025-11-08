@@ -198,8 +198,18 @@ class _ProjectCardState extends State<ProjectCard> {
             decoration: BoxDecoration(
               color: const Color(0xFF2A2A2A),
               borderRadius: BorderRadius.circular(20),
-              boxShadow: isHovered
+              boxShadow: isMobile
                   ? [
+                      // Permanent shadow for mobile
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.2),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ]
+                  : isHovered
+                  ? [
+                      // Hover shadow for desktop
                       BoxShadow(
                         color: Colors.white.withOpacity(0.4),
                         blurRadius: 40,
@@ -211,7 +221,14 @@ class _ProjectCardState extends State<ProjectCard> {
                         offset: const Offset(0, -20),
                       ),
                     ]
-                  : [],
+                  : [
+                      // Subtle default shadow for desktop
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

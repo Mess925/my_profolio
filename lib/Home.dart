@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
+  bool _hasNavigated = false;
 
   @override
   void dispose() {
@@ -21,20 +22,46 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool _handleScrollNotification(ScrollNotification notification) {
+    if (_hasNavigated) return false;
+
     // When user tries to scroll but can't because they're at the edge
     if (notification is OverscrollNotification) {
       // overscroll > 0 means trying to scroll down past bottom
-      if (notification.overscroll > 0) {
+      if (notification.overscroll > 20) {
+        _hasNavigated = true;
         if (widget.onNavigate != null) {
           widget.onNavigate!(1);
         }
         return true;
       }
     }
+
+    // Additional check for when scroll reaches maximum extent
+    if (notification is ScrollUpdateNotification) {
+      if (_scrollController.hasClients) {
+        final isAtBottom =
+            _scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent;
+
+        // If at bottom and trying to scroll more
+        if (isAtBottom &&
+            notification.scrollDelta != null &&
+            notification.scrollDelta! < 0) {
+          _hasNavigated = true;
+          if (widget.onNavigate != null) {
+            widget.onNavigate!(1);
+          }
+          return true;
+        }
+      }
+    }
+
     return false;
   }
 
   void _handlePointerSignal(PointerSignalEvent event) {
+    if (_hasNavigated) return;
+
     if (event is PointerScrollEvent) {
       // Check if at bottom and trying to scroll down
       if (_scrollController.hasClients) {
@@ -43,6 +70,7 @@ class _HomePageState extends State<HomePage> {
             _scrollController.position.maxScrollExtent;
 
         if (isAtBottom && event.scrollDelta.dy > 0) {
+          _hasNavigated = true;
           if (widget.onNavigate != null) {
             widget.onNavigate!(1);
           }
@@ -93,7 +121,9 @@ class _HomePageState extends State<HomePage> {
                       onNotification: _handleScrollNotification,
                       child: SingleChildScrollView(
                         controller: _scrollController,
-                        physics: const BouncingScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
                         child: HeroSection(
                           isMobile: isMobile,
                           isTablet: isTablet,
@@ -111,7 +141,9 @@ class _HomePageState extends State<HomePage> {
             onNotification: _handleScrollNotification,
             child: SingleChildScrollView(
               controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
                 child: MeteorShower(
