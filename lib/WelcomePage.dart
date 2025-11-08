@@ -52,11 +52,7 @@ class _ScrollablePagesState extends State<ScrollablePages> {
       body: PageView(
         controller: _controller,
         scrollDirection: Axis.vertical,
-        children: [
-          HomePage(onNavigate: _navigateToPage),
-          const ProjectPage(),
-          const ContactPage(),
-        ],
+        children: [const HomePage(), const ProjectPage(), const ContactPage()],
       ),
     );
   }
