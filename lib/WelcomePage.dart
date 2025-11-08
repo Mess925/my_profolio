@@ -5,7 +5,6 @@ import 'package:portfolio/Projects.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Contact.dart';
 import 'Home.dart';
-// import 'Projects.dart';
 import 'Helper.dart';
 
 class MyApp extends StatelessWidget {
@@ -126,7 +125,7 @@ class PhotoSection extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Image.asset(
-            'assets/images/a.JPG',
+            'assets/images/han.jpg',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Container(
@@ -179,10 +178,7 @@ class HeroSection extends StatelessWidget {
       alignment: Alignment.center,
       padding: EdgeInsets.all(isMobile ? 40 : 60),
       child: Container(
-        constraints: BoxConstraints(
-          maxWidth: isMobile ? 300 : 700,
-          // maxHeight: isMobile ? 300 : 700,
-        ),
+        constraints: BoxConstraints(maxWidth: isMobile ? 300 : 700),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -240,7 +236,6 @@ class HeroSection extends StatelessWidget {
               style: GoogleFonts.abrilFatface(
                 fontSize: getFontSize(28, 32, 36, isMobile, isTablet),
                 color: Colors.white,
-                // fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 20),
@@ -429,7 +424,7 @@ class SocialButtonsRow extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 20),
+        const SizedBox(width: 10),
         ...links.map(
           (link) => Padding(
             padding: const EdgeInsets.only(right: 16),

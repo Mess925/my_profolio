@@ -1,185 +1,256 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'dart:ui';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'Helper.dart';
-import 'WelcomePage.dart';
+import 'ProjectDetailPage.dart';
 
 class ProjectPage extends StatelessWidget {
-  final Function(int)? onNavigate;
-  static const String email = 'hanminthant222@gmail.com';
-
-  const ProjectPage({super.key, this.onNavigate});
+  const ProjectPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 800;
-        final isTablet =
-            constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
-
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 40,
-                ),
-                child: isMobile
-                    ? _buildMobileLayout(isMobile, isTablet)
-                    : _buildDesktopLayout(isMobile, isTablet),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(40.0),
+        child: Row(
+          children: [
+            const SizedBox(width: 20),
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 80,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  ProjectCard(
+                    title: 'ProtectivePath',
+                    subtitle: 'Navigation App For Visually Impaired',
+                    imagePath: 'images/protectivePath.png',
+                    route: '/protective-path',
+                  ),
+                  SizedBox(width: 30),
+                  ProjectCard(
+                    title: 'Little Lemon',
+                    subtitle: 'Restaurant Reservation App',
+                    imagePath: 'images/little_lemon.png',
+                    route: '/little-lemon',
+                  ),
+                  SizedBox(width: 30),
+                  ProjectCard(
+                    title: 'MiniRT',
+                    subtitle: 'Ray Tracing with C',
+                    imagePath: 'images/minirt.png',
+                    route: '/minirt',
+                  ),
+                  SizedBox(width: 30),
+                  ProjectCard(
+                    title: 'Project 4',
+                    subtitle: 'Test Project Number Four',
+                    imagePath: 'images/project4.png',
+                    route: '/project-4',
+                  ),
+                  SizedBox(width: 30),
+                  ProjectCard(
+                    title: 'Project 5',
+                    subtitle: 'Test Project Number Five',
+                    imagePath: 'images/project5.png',
+                    route: '/project-5',
+                  ),
+                  SizedBox(width: 30),
+                  ProjectCard(
+                    title: 'Project 6',
+                    subtitle: 'Test Project Number Six',
+                    imagePath: 'images/project6.png',
+                    route: '/project-6',
+                  ),
+                ],
               ),
             ),
+            const SizedBox(width: 20),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NavButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onTap;
+
+  const NavButton({Key? key, required this.text, required this.onTap})
+    : super(key: key);
+
+  @override
+  State<NavButton> createState() => _NavButtonState();
+}
+
+class _NavButtonState extends State<NavButton> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: isHovered ? 0.6 : 1.0,
+          child: Text(
+            widget.text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              letterSpacing: 2,
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+}
 
-  Widget _buildMobileLayout(bool isMobile, bool isTablet) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildTitle(30, isMobile, isTablet),
-        const SizedBox(height: 20),
-        _buildContactCard(25, 16, isMobile, isTablet),
-        const SizedBox(height: 40),
-        SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
-      ],
-    );
-  }
+class ProjectCard extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final String imagePath;
+  final String route;
 
-  Widget _buildDesktopLayout(bool isMobile, bool isTablet) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 80, right: 20),
+  const ProjectCard({
+    Key? key,
+    required this.title,
+    required this.subtitle,
+    required this.imagePath,
+    required this.route,
+  }) : super(key: key);
+
+  @override
+  State<ProjectCard> createState() => _ProjectCardState();
+}
+
+class _ProjectCardState extends State<ProjectCard> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Fixed card dimensions for horizontal scrolling
+    final cardWidth = 350.0;
+    final cardHeight = 500.0;
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProjectDetailPage(
+                title: widget.title,
+                subtitle: widget.subtitle,
+              ),
+            ),
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+          transform: Matrix4.translationValues(0, isHovered ? -10 : 0, 0),
+          width: cardWidth,
+          height: cardHeight,
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF2A2A2A),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: isHovered
+                  ? [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.1),
+                        blurRadius: 40,
+                        offset: const Offset(0, 20),
+                      ),
+                    ]
+                  : [],
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildTitle(
-                  getFontSize(25, 30, 50, isMobile, isTablet),
-                  isMobile,
-                  isTablet,
+                // Image Container (75% of card height)
+                Expanded(
+                  flex: 3,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    child: Image.asset(
+                      widget.imagePath,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: const Color(0xFF404040),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.broken_image,
+                                  size: 60,
+                                  color: Colors.white.withOpacity(0.3),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Image not found',
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.5),
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 20),
-                _buildContactCard(30, 20, isMobile, isTablet),
+                // Text Container (25% of card height)
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.subtitle,
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 14,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ),
-        Expanded(
-          child: SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTitle(double fontSize, bool isMobile, bool isTablet) {
-    return Text(
-      'CONTACT',
-      textAlign: TextAlign.start,
-      style: GoogleFonts.abrilFatface(fontSize: fontSize, color: Colors.white),
-    );
-  }
-
-  Widget _buildContactCard(
-    double titleSize,
-    double bodySize,
-    bool isMobile,
-    bool isTablet,
-  ) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 20 : 20,
-        vertical: 40,
-      ),
-      decoration: _cardDecoration(),
-      child: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: _buildContactText(titleSize, bodySize),
-        ),
       ),
     );
-  }
-
-  BoxDecoration _cardDecoration() {
-    return BoxDecoration(
-      color: Colors.white.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.3),
-          blurRadius: 20,
-          spreadRadius: 5,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactText(double titleSize, double bodySize) {
-    return RichText(
-      textAlign: TextAlign.start,
-      text: TextSpan(
-        style: GoogleFonts.roboto(
-          fontSize: bodySize,
-          color: Colors.white,
-          letterSpacing: 0.5,
-        ),
-        children: [
-          TextSpan(
-            text: 'Want to Develop a Mobile App?\n\n',
-            style: GoogleFonts.abrilFatface(
-              fontSize: titleSize,
-              color: Colors.white,
-            ),
-          ),
-          const TextSpan(
-            text:
-                '''I am currently prioritizing projects in social, education and new 
-ideas. Send me an E-mail with your details at ''',
-          ),
-          TextSpan(
-            text: email,
-            style: GoogleFonts.roboto(
-              fontSize: bodySize,
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () => _launchEmail(email),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _launchEmail(String email) async {
-    final Uri emailUri = Uri(
-      scheme: 'mailto',
-      path: email,
-      query: 'subject=Project Inquiry',
-    );
-
-    if (await canLaunchUrl(emailUri)) {
-      await launchUrl(emailUri);
-    } else {
-      debugPrint('Could not launch email client');
-    }
   }
 }

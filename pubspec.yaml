@@ -65,6 +65,9 @@ flutter:
     - assets/images/han.jpg
     - assets/images/lhs.jpeg
     - assets/images/THA.JPG
+    - assets/images/little_lemon.png
+    - assets/images/protectivePath.png
+    - assets/images/minirt.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
