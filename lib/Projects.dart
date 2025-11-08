@@ -9,70 +9,96 @@ class ProjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 80.0),
-        child: ScrollConfiguration(
-          // Add a custom scroll behavior that
-          // allows all devices to drag the list.
-          behavior: const MaterialScrollBehavior().copyWith(
-            dragDevices: {...PointerDeviceKind.values},
-          ),
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 120,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          ProjectCard(
-                            title: 'ProtectivePath',
-                            subtitle: 'Navigation App For Visually Impaired',
-                            imagePath: 'images/ppth.png',
-                            route: '/protective-path',
-                          ),
-                          SizedBox(width: 30),
-                          ProjectCard(
-                            title: 'Little Lemon',
-                            subtitle: 'Restaurant Reservation App',
-                            imagePath: 'images/res.png',
-                            route: '/little-lemon',
-                          ),
-                          SizedBox(width: 30),
-                          ProjectCard(
-                            title: 'MiniRT',
-                            subtitle: 'Ray Tracing with C',
-                            imagePath: 'images/minirt.png',
-                            route: '/minirt',
-                          ),
-                          SizedBox(width: 30),
-                          ProjectCard(
-                            title: 'RUN',
-                            subtitle: 'Fitness Running App',
-                            imagePath: 'images/r.png',
-                            route: '/run',
-                          ),
-                          SizedBox(width: 30),
-                          ProjectCard(
-                            title: 'Webserv',
-                            subtitle: 'A WebServer',
-                            imagePath: 'images/project5.png',
-                            route: '/webserv',
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 800;
+          final isTablet =
+              constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+          final isDesktop = constraints.maxWidth >= 1200;
+
+          // Responsive padding
+          final horizontalPadding = isMobile ? 16.0 : (isTablet ? 40.0 : 80.0);
+          final verticalPadding = isMobile ? 20.0 : 40.0;
+
+          // All devices: Horizontal scrolling
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: verticalPadding,
+              horizontal: horizontalPadding,
+            ),
+            child: ScrollConfiguration(
+              behavior: const MaterialScrollBehavior().copyWith(
+                dragDevices: {...PointerDeviceKind.values},
               ),
-            ],
-          ),
-        ),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 20.0 : 40.0,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height:
+                              constraints.maxHeight -
+                              (verticalPadding * 2) -
+                              40,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ProjectCard(
+                                title: 'ProtectivePath',
+                                subtitle:
+                                    'Navigation App For Visually Impaired',
+                                imagePath: 'images/ppth.png',
+                                route: '/protective-path',
+                                isTablet: isTablet,
+                              ),
+                              SizedBox(width: isTablet ? 20 : 30),
+                              ProjectCard(
+                                title: 'Little Lemon',
+                                subtitle: 'Restaurant Reservation App',
+                                imagePath: 'images/res.png',
+                                route: '/little-lemon',
+                                isTablet: isTablet,
+                              ),
+                              SizedBox(width: isTablet ? 20 : 30),
+                              ProjectCard(
+                                title: 'MiniRT',
+                                subtitle: 'Ray Tracing with C',
+                                imagePath: 'images/minirt.png',
+                                route: '/minirt',
+                                isTablet: isTablet,
+                              ),
+                              SizedBox(width: isTablet ? 20 : 30),
+                              ProjectCard(
+                                title: 'RUN',
+                                subtitle: 'Fitness Running App',
+                                imagePath: 'images/r.png',
+                                route: '/run',
+                                isTablet: isTablet,
+                              ),
+                              SizedBox(width: isTablet ? 20 : 30),
+                              ProjectCard(
+                                title: 'Webserv',
+                                subtitle: 'A WebServer',
+                                imagePath: 'images/project5.png',
+                                route: '/webserv',
+                                isTablet: isTablet,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -122,6 +148,7 @@ class ProjectCard extends StatefulWidget {
   final String subtitle;
   final String imagePath;
   final String route;
+  final bool isTablet;
 
   const ProjectCard({
     Key? key,
@@ -129,6 +156,7 @@ class ProjectCard extends StatefulWidget {
     required this.subtitle,
     required this.imagePath,
     required this.route,
+    this.isTablet = false,
   }) : super(key: key);
 
   @override
@@ -140,9 +168,11 @@ class _ProjectCardState extends State<ProjectCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Fixed card dimensions for horizontal scrolling
-    final cardWidth = 350.0;
-    final cardHeight = 500.0;
+    final isMobile = MediaQuery.of(context).size.width < 800;
+
+    // Responsive card dimensions
+    final cardWidth = isMobile ? 280.0 : (widget.isTablet ? 300.0 : 350.0);
+    final cardHeight = isMobile ? 380.0 : (widget.isTablet ? 450.0 : 500.0);
 
     return MouseRegion(
       onEnter: (_) => setState(() => isHovered = true),
@@ -176,7 +206,6 @@ class _ProjectCardState extends State<ProjectCard> {
                         blurRadius: 40,
                         offset: const Offset(0, 20),
                       ),
-
                       BoxShadow(
                         color: Colors.white.withOpacity(0.4),
                         blurRadius: 40,
@@ -200,7 +229,6 @@ class _ProjectCardState extends State<ProjectCard> {
                       child: Image.asset(
                         widget.imagePath,
                         fit: BoxFit.cover,
-                        // height: d,
                         width: double.infinity,
                         errorBuilder: (context, error, stackTrace) {
                           return Container(
@@ -235,16 +263,16 @@ class _ProjectCardState extends State<ProjectCard> {
                 Expanded(
                   flex: 1,
                   child: Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           widget.title,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
-                            fontSize: 24,
+                            fontSize: isMobile ? 20 : 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -253,7 +281,7 @@ class _ProjectCardState extends State<ProjectCard> {
                           widget.subtitle,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.7),
-                            fontSize: 14,
+                            fontSize: isMobile ? 12 : 14,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
