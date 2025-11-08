@@ -51,7 +51,7 @@ class ProjectPage extends StatelessWidget {
                                 title: 'ProtectivePath',
                                 subtitle:
                                     'Navigation App For Visually Impaired',
-                                imagePath: 'images/ppth.png',
+                                imagePath: 'images/ppth.jpg',
                                 route: '/protective-path',
                                 isTablet: isTablet,
                               ),
@@ -59,7 +59,7 @@ class ProjectPage extends StatelessWidget {
                               ProjectCard(
                                 title: 'Little Lemon',
                                 subtitle: 'Restaurant Reservation App',
-                                imagePath: 'images/res.png',
+                                imagePath: 'images/res.jpg',
                                 route: '/little-lemon',
                                 isTablet: isTablet,
                               ),
@@ -67,7 +67,7 @@ class ProjectPage extends StatelessWidget {
                               ProjectCard(
                                 title: 'MiniRT',
                                 subtitle: 'Ray Tracing with C',
-                                imagePath: 'images/minirt.png',
+                                imagePath: 'images/minirt.jpg',
                                 route: '/minirt',
                                 isTablet: isTablet,
                               ),
@@ -75,7 +75,7 @@ class ProjectPage extends StatelessWidget {
                               ProjectCard(
                                 title: 'RUN',
                                 subtitle: 'Fitness Running App',
-                                imagePath: 'images/r.png',
+                                imagePath: 'images/r.jpg',
                                 route: '/run',
                                 isTablet: isTablet,
                               ),
@@ -83,7 +83,7 @@ class ProjectPage extends StatelessWidget {
                               ProjectCard(
                                 title: 'Webserv',
                                 subtitle: 'A WebServer',
-                                imagePath: 'images/project5.png',
+                                imagePath: 'images/project5.jpg',
                                 route: '/webserv',
                                 isTablet: isTablet,
                               ),
