@@ -365,6 +365,7 @@ class SocialButtonsRow extends StatelessWidget {
         ],
       );
     } else {
+      // Desktop layout - horizontal sections side by side
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -386,6 +387,7 @@ class SocialButtonsRow extends StatelessWidget {
       crossAxisAlignment: isMobileLayout
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           header,
@@ -397,24 +399,39 @@ class SocialButtonsRow extends StatelessWidget {
           ),
         ),
         SizedBox(height: isMobileLayout ? 16 : 20),
-        Wrap(
-          spacing: isMobileLayout ? 12 : 16,
-          runSpacing: isMobileLayout ? 12 : 16,
-          alignment: isMobileLayout
-              ? WrapAlignment.center
-              : WrapAlignment.start,
-          children: links
-              .map(
-                (link) => _SocialButton(
-                  icon: link.icon,
-                  label: link.label,
-                  color: link.color,
-                  isMobile: isMobileLayout,
-                  onTap: () => _launchURL(link.url),
-                ),
+        // Use Row for desktop to keep buttons horizontal
+        isMobileLayout
+            ? Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: links
+                    .map(
+                      (link) => _SocialButton(
+                        icon: link.icon,
+                        label: link.label,
+                        color: link.color,
+                        isMobile: isMobileLayout,
+                        onTap: () => _launchURL(link.url),
+                      ),
+                    )
+                    .toList(),
               )
-              .toList(),
-        ),
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (int i = 0; i < links.length; i++) ...[
+                    _SocialButton(
+                      icon: links[i].icon,
+                      label: links[i].label,
+                      color: links[i].color,
+                      isMobile: isMobileLayout,
+                      onTap: () => _launchURL(links[i].url),
+                    ),
+                    if (i < links.length - 1) const SizedBox(width: 16),
+                  ],
+                ],
+              ),
       ],
     );
   }

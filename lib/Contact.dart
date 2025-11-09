@@ -122,7 +122,6 @@ class _ContactPageState extends State<ContactPage>
     double verticalPadding,
   ) {
     double horizontalPadding = isTablet ? 20.0 : 40.0;
-    // double contentWidth = constraints.maxWidth - (horizontalPadding * 2);
     double columnSpacing = isTablet ? 20.0 : 30.0;
 
     return Center(
@@ -159,16 +158,9 @@ class _ContactPageState extends State<ContactPage>
                 ),
               ),
               SizedBox(width: columnSpacing),
-              Expanded(
-                flex: 1,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SocialButtonsRow(
-                    isMobile: isMobile,
-                    isTablet: isTablet,
-                  ),
-                ),
-              ),
+              SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
+              //   ),
+              // ),
             ],
           ),
         ),
