@@ -53,7 +53,7 @@ class _ScrollablePagesState extends State<ScrollablePages> {
         controller: _controller,
         scrollDirection: Axis.vertical,
         children: [
-          HomePage(onNavigate: _navigateToPage), // Pass the function
+          HomePage(onNavigate: _navigateToPage),
           const ProjectPage(),
           const ContactPage(),
         ],
@@ -318,16 +318,19 @@ class SocialButtonsRow extends StatelessWidget {
         icon: FontAwesomeIcons.instagram,
         url: 'https://www.instagram.com/hthant__/?hl=en',
         label: 'Instagram',
+        color: const Color(0xFFE4405F),
       ),
       SocialLink(
         icon: FontAwesomeIcons.github,
         url: 'https://github.com/Mess925',
         label: 'GitHub',
+        color: const Color(0xFF333333),
       ),
       SocialLink(
         icon: FontAwesomeIcons.whatsapp,
         url: 'tel:+6588247721',
         label: 'WhatsApp',
+        color: const Color(0xFF25D366),
       ),
     ];
 
@@ -337,140 +340,77 @@ class SocialButtonsRow extends StatelessWidget {
         url:
             'https://linktr.ee/han_min?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnqa6ndjKyqZIwGKyQc4JO3veYqx39azHjNKfTaON8zZfMxWlR9BTAqWqlxEg_aem_GDGIIqFrZ-RZHtlHseSGBw',
         label: 'LinkTree',
+        color: const Color(0xFF43E55E),
       ),
       SocialLink(
         icon: FontAwesomeIcons.envelope,
         url: 'mailto:hanminthant222@gmail.com',
         label: 'E-Mail',
+        color: const Color(0xFFEA4335),
       ),
       SocialLink(
         icon: FontAwesomeIcons.linkedin,
         url: 'https://www.linkedin.com/in/han-min-thant-0b051a283/',
         label: 'LinkedIn',
+        color: const Color(0xFF0A66C2),
       ),
     ];
 
     if (isMobile || isTablet) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+      return Column(
         children: [
-          _buildColumn('Personal', personalLinks),
-          const SizedBox(width: 12),
-          _buildColumn('Professional', professionalLinks),
+          _buildSection('Personal', personalLinks, true),
+          const SizedBox(height: 32),
+          _buildSection('Professional', professionalLinks, true),
         ],
       );
     } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildRow('Personal', personalLinks),
-          SizedBox(height: isMobile ? 24 : 32),
-          _buildRow('Professional', professionalLinks),
+          _buildSection('Personal', personalLinks, false),
+          const SizedBox(width: 80),
+          _buildSection('Professional', professionalLinks, false),
         ],
       );
     }
   }
 
-  Widget _buildColumn(String header, List<SocialLink> links) {
-    return Flexible(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            header,
-            style: GoogleFonts.abrilFatface(
-              fontSize: 16,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          for (var link in links)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: InkWell(
-                onTap: () => _launchURL(link.url),
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _SocialButton(
-                        icon: link.icon,
-                        isMobile: true,
-                        onTap: () => _launchURL(link.url),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          link.label,
-                          style: GoogleFonts.roboto(
-                            fontSize: 13,
-                            color: Colors.white.withOpacity(0.85),
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRow(String header, List<SocialLink> links) {
+  Widget _buildSection(
+    String header,
+    List<SocialLink> links,
+    bool isMobileLayout,
+  ) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isMobileLayout
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Text(
           header,
           style: GoogleFonts.abrilFatface(
-            fontSize: 22,
+            fontSize: isMobileLayout ? 20 : 24,
             color: Colors.white,
             fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: isMobileLayout ? 16 : 20),
         Wrap(
-          spacing: 16,
-          runSpacing: 12,
+          spacing: isMobileLayout ? 12 : 16,
+          runSpacing: isMobileLayout ? 12 : 16,
+          alignment: isMobileLayout
+              ? WrapAlignment.center
+              : WrapAlignment.start,
           children: links
               .map(
-                (link) => InkWell(
+                (link) => _SocialButton(
+                  icon: link.icon,
+                  label: link.label,
+                  color: link.color,
+                  isMobile: isMobileLayout,
                   onTap: () => _launchURL(link.url),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 4,
-                      horizontal: 4,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _SocialButton(
-                          icon: link.icon,
-                          isMobile: false,
-                          onTap: () => _launchURL(link.url),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          link.label,
-                          style: GoogleFonts.roboto(
-                            fontSize: 10,
-                            color: Colors.white.withOpacity(0.85),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               )
               .toList(),
@@ -484,17 +424,27 @@ class SocialLink {
   final IconData icon;
   final String url;
   final String label;
+  final Color color;
 
-  SocialLink({required this.icon, required this.url, required this.label});
+  SocialLink({
+    required this.icon,
+    required this.url,
+    required this.label,
+    required this.color,
+  });
 }
 
 class _SocialButton extends StatefulWidget {
   final IconData icon;
+  final String label;
+  final Color color;
   final bool isMobile;
   final VoidCallback onTap;
 
   const _SocialButton({
     required this.icon,
+    required this.label,
+    required this.color,
     required this.isMobile,
     required this.onTap,
   });
@@ -508,35 +458,80 @@ class _SocialButtonState extends State<_SocialButton> {
 
   @override
   Widget build(BuildContext context) {
-    final double buttonSize = widget.isMobile ? 40 : 50;
-    final double iconSize = widget.isMobile ? 20 : 24;
+    final double buttonSize = widget.isMobile ? 70 : 85;
+    final double iconSize = widget.isMobile ? 28 : 32;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: buttonSize,
-        height: buttonSize,
-        decoration: BoxDecoration(
-          color: _isHovered
-              ? Colors.white.withOpacity(0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: _isHovered
-                ? Colors.white.withOpacity(0.3)
-                : Colors.transparent,
-            width: 1,
-          ),
-        ),
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          onPressed: widget.onTap,
-          icon: FaIcon(
-            widget.icon,
-            color: _isHovered ? Colors.white : Colors.grey.withOpacity(0.85),
-            size: iconSize,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: buttonSize,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                width: buttonSize,
+                height: buttonSize,
+                decoration: BoxDecoration(
+                  gradient: _isHovered
+                      ? LinearGradient(
+                          colors: [widget.color.withOpacity(0.8), widget.color],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: _isHovered ? null : Colors.white.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: _isHovered
+                        ? widget.color.withOpacity(0.5)
+                        : Colors.white.withOpacity(0.15),
+                    width: 2,
+                  ),
+                  boxShadow: _isHovered
+                      ? [
+                          BoxShadow(
+                            color: widget.color.withOpacity(0.4),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ]
+                      : [],
+                ),
+                child: Center(
+                  child: AnimatedScale(
+                    duration: const Duration(milliseconds: 300),
+                    scale: _isHovered ? 1.1 : 1.0,
+                    child: FaIcon(
+                      widget.icon,
+                      color: _isHovered
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.7),
+                      size: iconSize,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                widget.label,
+                style: GoogleFonts.roboto(
+                  fontSize: widget.isMobile ? 11 : 12,
+                  color: _isHovered
+                      ? Colors.white
+                      : Colors.white.withOpacity(0.6),
+                  fontWeight: _isHovered ? FontWeight.w600 : FontWeight.w500,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
