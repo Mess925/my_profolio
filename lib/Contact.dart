@@ -8,10 +8,9 @@ import 'Helper.dart';
 import 'WelcomePage.dart';
 
 class ContactPage extends StatefulWidget {
-  final Function(int)? onNavigate;
   static const String email = 'hanminthant222@gmail.com';
 
-  const ContactPage({super.key, this.onNavigate});
+  const ContactPage({Key? key}) : super(key: key);
 
   @override
   State<ContactPage> createState() => _ContactPageState();
@@ -45,89 +44,126 @@ class _ContactPageState extends State<ContactPage>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isMobile = constraints.maxWidth < 800;
-        final isTablet =
-            constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 800;
+          final isTablet =
+              constraints.maxWidth >= 800 && constraints.maxWidth < 1200;
 
-        return SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Center(
+          // Responsive padding
+          final horizontalPadding = isMobile ? 16.0 : (isTablet ? 40.0 : 80.0);
+          final verticalPadding = isMobile ? 20.0 : 40.0;
+
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: verticalPadding,
+              horizontal: horizontalPadding,
+            ),
+            child: ScrollConfiguration(
+              behavior: const MaterialScrollBehavior().copyWith(
+                dragDevices: {...PointerDeviceKind.values},
+              ),
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 16 : 20,
-                    vertical: 40,
-                  ),
-                  child: isMobile
-                      ? _buildMobileLayout(isMobile, isTablet)
-                      : _buildDesktopLayout(isMobile, isTablet),
-                ),
+                child: isMobile
+                    ? _buildMobileLayout(
+                        constraints,
+                        isMobile,
+                        isTablet,
+                        verticalPadding,
+                      )
+                    : _buildDesktopLayout(
+                        constraints,
+                        isMobile,
+                        isTablet,
+                        verticalPadding,
+                      ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  Widget _buildMobileLayout(bool isMobile, bool isTablet) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+  Widget _buildMobileLayout(
+    BoxConstraints constraints,
+    bool isMobile,
+    bool isTablet,
+    double verticalPadding,
+  ) {
+    return ListView(
       children: [
-        _buildTitle(28, isMobile, isTablet),
-        const SizedBox(height: 20),
-        _buildContactCard(20, 14, isMobile, isTablet),
-        const SizedBox(height: 32),
-        SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 20.0 : 40.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 80),
+              _buildTitle(28, isMobile, isTablet),
+              const SizedBox(height: 40),
+              _buildContactCard(20, 14, isMobile, isTablet),
+              const SizedBox(height: 40),
+              SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildDesktopLayout(bool isMobile, bool isTablet) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 1400),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.only(left: 80),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildTitle(
-                    getFontSize(25, 30, 50, isMobile, isTablet),
-                    isMobile,
-                    isTablet,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildContactCard(
-                    isTablet ? 22 : 28,
-                    isTablet ? 16 : 18,
-                    isMobile,
-                    isTablet,
-                  ),
-                ],
-              ),
+  Widget _buildDesktopLayout(
+    BoxConstraints constraints,
+    bool isMobile,
+    bool isTablet,
+    double verticalPadding,
+  ) {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: isTablet ? 20.0 : 40.0),
+          child: SizedBox(
+            height: constraints.maxHeight - (verticalPadding * 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildTitle(
+                      getFontSize(25, 30, 50, isMobile, isTablet),
+                      isMobile,
+                      isTablet,
+                    ),
+                    const SizedBox(height: 20),
+                    _buildContactCard(
+                      isTablet ? 22 : 28,
+                      isTablet ? 16 : 18,
+                      isMobile,
+                      isTablet,
+                    ),
+                  ],
+                ),
+                SizedBox(width: isTablet ? 20 : 30),
+
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
+                  ],
+                ),
+              ],
             ),
           ),
-          SizedBox(width: isTablet ? 20 : 40),
-          Flexible(
-            flex: 1,
-            child: SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
