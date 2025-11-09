@@ -125,7 +125,7 @@ class PhotoSection extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: Image.asset(
-            'assets/images/han.jpg',
+            'assets/images/n.jpg',
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Container(
@@ -316,7 +316,7 @@ class SocialButtonsRow extends StatelessWidget {
     final personalLinks = [
       SocialLink(
         icon: FontAwesomeIcons.instagram,
-        url: 'https://www.instagram.com/yourprofile',
+        url: 'https://www.instagram.com/hthant__/?hl=en',
         label: 'Instagram',
       ),
       SocialLink(
@@ -325,16 +325,17 @@ class SocialButtonsRow extends StatelessWidget {
         label: 'GitHub',
       ),
       SocialLink(
-        icon: FontAwesomeIcons.phone,
+        icon: FontAwesomeIcons.whatsapp,
         url: 'tel:+6588247721',
-        label: 'Phone',
+        label: 'WhatsApp',
       ),
     ];
 
     final professionalLinks = [
       SocialLink(
         icon: FontAwesomeIcons.link,
-        url: 'https://linktr.ee/yourprofile',
+        url:
+            'https://linktr.ee/han_min?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnqa6ndjKyqZIwGKyQc4JO3veYqx39azHjNKfTaON8zZfMxWlR9BTAqWqlxEg_aem_GDGIIqFrZ-RZHtlHseSGBw',
         label: 'LinkTree',
       ),
       SocialLink(
@@ -350,18 +351,16 @@ class SocialButtonsRow extends StatelessWidget {
     ];
 
     if (isMobile || isTablet) {
-      // Mobile: 2 columns, stacked vertically
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _buildColumn('Personal', personalLinks),
-          const SizedBox(width: 32),
+          const SizedBox(width: 12),
           _buildColumn('Professional', professionalLinks),
         ],
       );
     } else {
-      // Desktop: stacked rows horizontally
       return Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -374,79 +373,107 @@ class SocialButtonsRow extends StatelessWidget {
   }
 
   Widget _buildColumn(String header, List<SocialLink> links) {
+    return Flexible(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            header,
+            style: GoogleFonts.abrilFatface(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          for (var link in links)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: InkWell(
+                onTap: () => _launchURL(link.url),
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _SocialButton(
+                        icon: link.icon,
+                        isMobile: true,
+                        onTap: () => _launchURL(link.url),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          link.label,
+                          style: GoogleFonts.roboto(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.85),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRow(String header, List<SocialLink> links) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           header,
           style: GoogleFonts.abrilFatface(
-            fontSize: 18,
+            fontSize: 22,
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        for (var link in links)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: Row(
-              children: [
-                _SocialButton(
-                  icon: link.icon,
-                  isMobile: true,
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          children: links
+              .map(
+                (link) => InkWell(
                   onTap: () => _launchURL(link.url),
-                ),
-                Text(
-                  link.label,
-                  style: GoogleFonts.roboto(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.85),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 4,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _SocialButton(
+                          icon: link.icon,
+                          isMobile: false,
+                          onTap: () => _launchURL(link.url),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          link.label,
+                          style: GoogleFonts.roboto(
+                            fontSize: 10,
+                            color: Colors.white.withOpacity(0.85),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildRow(String header, List<SocialLink> links) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: 130,
-          child: Text(
-            header,
-            style: GoogleFonts.abrilFatface(
-              fontSize: 22,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        const SizedBox(width: 10),
-        ...links.map(
-          (link) => Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Row(
-              children: [
-                _SocialButton(
-                  icon: link.icon,
-                  isMobile: false,
-                  onTap: () => _launchURL(link.url),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  link.label,
-                  style: GoogleFonts.roboto(
-                    fontSize: 10,
-                    color: Colors.white.withOpacity(0.85),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              )
+              .toList(),
         ),
       ],
     );

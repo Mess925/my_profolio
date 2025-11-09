@@ -121,21 +121,27 @@ class _ContactPageState extends State<ContactPage>
     bool isTablet,
     double verticalPadding,
   ) {
-    return ListView(
-      scrollDirection: Axis.horizontal,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: isTablet ? 20.0 : 40.0),
-          child: SizedBox(
-            height: constraints.maxHeight - (verticalPadding * 2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
+    double horizontalPadding = isTablet ? 20.0 : 40.0;
+    // double contentWidth = constraints.maxWidth - (horizontalPadding * 2);
+    double columnSpacing = isTablet ? 20.0 : 30.0;
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 1200, // keeps layout neat on ultra-wide monitors
+            minHeight: constraints.maxHeight - (verticalPadding * 2),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                flex: isTablet ? 2 : 2,
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildTitle(
                       getFontSize(25, 30, 50, isMobile, isTablet),
@@ -151,19 +157,22 @@ class _ContactPageState extends State<ContactPage>
                     ),
                   ],
                 ),
-                SizedBox(width: isTablet ? 20 : 30),
-
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
-                  ],
+              ),
+              SizedBox(width: columnSpacing),
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: SocialButtonsRow(
+                    isMobile: isMobile,
+                    isTablet: isTablet,
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
