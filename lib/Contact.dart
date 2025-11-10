@@ -21,6 +21,7 @@ class _ContactPageState extends State<ContactPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool _isEmailCopied = false;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -38,6 +39,7 @@ class _ContactPageState extends State<ContactPage>
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -61,26 +63,21 @@ class _ContactPageState extends State<ContactPage>
               vertical: verticalPadding,
               horizontal: horizontalPadding,
             ),
-            child: ScrollConfiguration(
-              behavior: const MaterialScrollBehavior().copyWith(
-                dragDevices: {...PointerDeviceKind.values},
-              ),
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: isMobile
-                    ? _buildMobileLayout(
-                        constraints,
-                        isMobile,
-                        isTablet,
-                        verticalPadding,
-                      )
-                    : _buildDesktopLayout(
-                        constraints,
-                        isMobile,
-                        isTablet,
-                        verticalPadding,
-                      ),
-              ),
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: isMobile
+                  ? _buildMobileLayout(
+                      constraints,
+                      isMobile,
+                      isTablet,
+                      verticalPadding,
+                    )
+                  : _buildDesktopLayout(
+                      constraints,
+                      isMobile,
+                      isTablet,
+                      verticalPadding,
+                    ),
             ),
           );
         },
@@ -94,9 +91,16 @@ class _ContactPageState extends State<ContactPage>
     bool isTablet,
     double verticalPadding,
   ) {
-    return ListView(
-      children: [
-        Padding(
+    return NotificationListener<OverscrollIndicatorNotification>(
+      onNotification: (notification) {
+        notification.disallowIndicator();
+        return false;
+      },
+      child: SingleChildScrollView(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        dragStartBehavior: DragStartBehavior.down,
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: isTablet ? 20.0 : 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -108,10 +112,11 @@ class _ContactPageState extends State<ContactPage>
               _buildContactCard(20, 14, isMobile, isTablet),
               const SizedBox(height: 40),
               SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.3),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -129,7 +134,7 @@ class _ContactPageState extends State<ContactPage>
         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: 1200, // keeps layout neat on ultra-wide monitors
+            maxWidth: 1200,
             minHeight: constraints.maxHeight - (verticalPadding * 2),
           ),
           child: Row(
@@ -159,8 +164,6 @@ class _ContactPageState extends State<ContactPage>
               ),
               SizedBox(width: columnSpacing),
               SocialButtonsRow(isMobile: isMobile, isTablet: isTablet),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -385,3 +388,26 @@ class _ContactPageState extends State<ContactPage>
     );
   }
 }
+
+// // Placeholder for missing components
+// class SocialButtonsRow extends StatelessWidget {
+//   final bool isMobile;
+//   final bool isTablet;
+
+//   const SocialButtonsRow({
+//     Key? key,
+//     required this.isMobile,
+//     required this.isTablet,
+//   }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(); // Your implementation
+//   }
+// }
+
+// double getFontSize(double mobile, double tablet, double desktop, bool isMobile, bool isTablet) {
+//   if (isMobile) return mobile;
+//   if (isTablet) return tablet;
+//   return desktop;
+// }
