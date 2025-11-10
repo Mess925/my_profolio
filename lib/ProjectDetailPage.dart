@@ -69,8 +69,24 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     super.dispose();
   }
 
+  double getFontSize(
+    double mobile,
+    double tablet,
+    double desktop,
+    bool isMobile,
+    bool isTablet,
+  ) {
+    if (isMobile) return mobile;
+    if (isTablet) return tablet;
+    return desktop;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = width < 600;
+    final isTablet = width >= 600 && width < 1024;
+
     return Scaffold(
       backgroundColor: Colors.black,
       extendBodyBehindAppBar: true,
@@ -81,14 +97,14 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         title: Text(
           'HAN',
           style: GoogleFonts.abrilFatface(
-            fontSize: 60,
+            fontSize: getFontSize(40, 50, 60, isMobile, isTablet),
             color: Colors.grey.withOpacity(0.8),
             letterSpacing: 2,
           ),
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 40),
+            padding: EdgeInsets.only(right: isMobile ? 16 : 40),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
@@ -123,7 +139,10 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 20 : (isTablet ? 30 : 40),
+                vertical: isMobile ? 40 : 60,
+              ),
               child: FadeTransition(
                 opacity: _fadeAnimation,
                 child: SlideTransition(
@@ -135,30 +154,30 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                       Text(
                         widget.title,
                         style: GoogleFonts.poppins(
-                          fontSize: 48,
+                          fontSize: getFontSize(32, 40, 48, isMobile, isTablet),
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           height: 1.2,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: isMobile ? 12 : 16),
 
                       // Subtitle
                       Text(
                         widget.subtitle,
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
+                          fontSize: getFontSize(16, 18, 20, isMobile, isTablet),
                           color: Colors.grey.shade400,
                           fontWeight: FontWeight.w300,
                         ),
                       ),
 
-                      const SizedBox(height: 60),
+                      SizedBox(height: isMobile ? 40 : 60),
 
                       // Divider
                       Container(
                         height: 2,
-                        width: 80,
+                        width: isMobile ? 60 : 80,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [Colors.white, Colors.white.withOpacity(0)],
@@ -166,30 +185,37 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                         ),
                       ),
 
-                      const SizedBox(height: 60),
+                      SizedBox(height: isMobile ? 40 : 60),
 
                       // Overview Section
-                      _buildSection('Overview', widget.details.overview),
+                      _buildSection(
+                        'Overview',
+                        widget.details.overview,
+                        isMobile,
+                        isTablet,
+                      ),
 
-                      const SizedBox(height: 40),
+                      SizedBox(height: isMobile ? 30 : 40),
 
                       // Key Features Section
                       _buildFeaturesSection(
                         'Key Features',
                         widget.details.keyFeatures,
+                        isMobile,
+                        isTablet,
                       ),
 
-                      const SizedBox(height: 40),
+                      SizedBox(height: isMobile ? 30 : 40),
 
-                      // Technologies Section
                       _buildSection(
                         'Technologies',
                         widget.details.technologies,
+                        isMobile,
+                        isTablet,
                       ),
 
-                      const SizedBox(height: 60),
+                      SizedBox(height: isMobile ? 40 : 60),
 
-                      // Call to Action Button (optional)
                       if (widget.details.ctaButtonText != null)
                         Center(
                           child: MouseRegion(
@@ -204,9 +230,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                                         context,
                                       ).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            'Learn more about ${widget.title}',
-                                          ),
+                                          content: Text('No action yet.'),
                                           backgroundColor: Colors.grey.shade800,
                                         ),
                                       );
@@ -214,9 +238,9 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.white,
                                   foregroundColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 48,
-                                    vertical: 20,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isMobile ? 32 : 48,
+                                    vertical: isMobile ? 16 : 20,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
@@ -226,7 +250,13 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                                 child: Text(
                                   widget.details.ctaButtonText!,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 16,
+                                    fontSize: getFontSize(
+                                      14,
+                                      15,
+                                      16,
+                                      isMobile,
+                                      isTablet,
+                                    ),
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 1,
                                   ),
@@ -246,24 +276,29 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     );
   }
 
-  Widget _buildSection(String title, String content) {
+  Widget _buildSection(
+    String title,
+    String content,
+    bool isMobile,
+    bool isTablet,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 24,
+            fontSize: getFontSize(20, 22, 24, isMobile, isTablet),
             fontWeight: FontWeight.w600,
             color: Colors.white,
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: isMobile ? 12 : 16),
         Text(
           content,
           style: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: getFontSize(14, 15, 16, isMobile, isTablet),
             color: Colors.grey.shade300,
             height: 1.8,
             fontWeight: FontWeight.w300,
@@ -273,20 +308,25 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
     );
   }
 
-  Widget _buildFeaturesSection(String title, List<String> features) {
+  Widget _buildFeaturesSection(
+    String title,
+    List<String> features,
+    bool isMobile,
+    bool isTablet,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: GoogleFonts.poppins(
-            fontSize: 24,
+            fontSize: getFontSize(20, 22, 24, isMobile, isTablet),
             fontWeight: FontWeight.w600,
             color: Colors.white,
             letterSpacing: 0.5,
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: isMobile ? 12 : 16),
         ...features.map(
           (feature) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -296,7 +336,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                 Text(
                   '• ',
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
+                    fontSize: getFontSize(14, 15, 16, isMobile, isTablet),
                     color: Colors.grey.shade300,
                     height: 1.8,
                     fontWeight: FontWeight.w300,
@@ -306,7 +346,7 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
                   child: Text(
                     feature,
                     style: GoogleFonts.poppins(
-                      fontSize: 16,
+                      fontSize: getFontSize(14, 15, 16, isMobile, isTablet),
                       color: Colors.grey.shade300,
                       height: 1.8,
                       fontWeight: FontWeight.w300,
@@ -322,7 +362,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   }
 }
 
-// Helper function to get project details by title
 ProjectDetails getProjectDetails(String title) {
   switch (title) {
     case 'ProtectivePath':
@@ -339,7 +378,7 @@ ProjectDetails getProjectDetails(String title) {
           'Offline maps for uninterrupted navigation',
         ],
         technologies:
-            'Flutter • Google Maps API • TensorFlow Lite • Text-to-Speech',
+            'Swift • Google Maps API • TensorFlow Lite • Text-to-Speech',
         ctaButtonText: 'View Project',
       );
 
@@ -356,7 +395,7 @@ ProjectDetails getProjectDetails(String title) {
           'Integrated payment system for deposits',
           'Review and rating system',
         ],
-        technologies: 'Flutter • Firebase • Cloud Functions • Stripe API',
+        technologies: 'Swift • Firebase • Cloud Functions • Stripe API',
         ctaButtonText: 'View Demo',
       );
 
