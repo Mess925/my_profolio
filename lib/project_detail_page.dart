@@ -71,7 +71,6 @@ class _ProjectDetailPageState extends State<ProjectDetailPage>
   @override
   Widget build(BuildContext context) {
     final isMobile = Responsive.isMobile(context);
-    final isTablet = Responsive.isTablet(context);
 
     return Scaffold(
       backgroundColor: Colors.black,

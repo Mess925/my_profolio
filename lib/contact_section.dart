@@ -83,8 +83,6 @@ class _ContactSectionState extends State<ContactSection>
   }
 
   Widget _buildHeader(BuildContext context) {
-    final isMobile = Responsive.isMobile(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

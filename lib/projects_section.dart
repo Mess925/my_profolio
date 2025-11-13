@@ -249,7 +249,6 @@ class _ProjectCardState extends State<ProjectCard> {
                           child: Center(
                             child: Image.asset(
                               widget.imagePath,
-                              fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) {
                                 return _buildPlaceholder();

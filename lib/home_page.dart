@@ -89,13 +89,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-
           // Page indicators (Desktop only)
           if (Responsive.isDesktop(context)) _buildPageIndicators(),
-
-          // Scroll hint on first page (Mobile only)
-          if (_currentPage == 0 && Responsive.isMobile(context))
-            _buildScrollHint(),
         ],
       ),
     );
@@ -212,47 +207,6 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildScrollHint() {
-    return Positioned(
-      bottom: 30,
-      left: 0,
-      right: 0,
-      child: Center(
-        child: TweenAnimationBuilder(
-          duration: const Duration(milliseconds: 1500),
-          tween: Tween<double>(begin: 0, end: 1),
-          builder: (context, double value, child) {
-            return Opacity(
-              opacity: (value * 2).clamp(0, 1),
-              child: Transform.translate(
-                offset: Offset(0, value * 10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Scroll Down',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        color: Colors.white.withOpacity(0.6),
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Icon(
-                      Icons.keyboard_arrow_down,
-                      color: Colors.white.withOpacity(0.6),
-                      size: 24,
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
         ),
       ),
     );
