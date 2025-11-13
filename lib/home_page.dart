@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 import 'about_section.dart';
 import 'projects_section.dart';
-import 'contact_section.dart'; // Add this import
+import 'contact_section.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -47,6 +47,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = Responsive.isMobile(context);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -74,21 +76,27 @@ class _HomePageState extends State<HomePage> {
                 child: PageView(
                   controller: _pageController,
                   scrollDirection: Axis.vertical,
-                  physics: const ClampingScrollPhysics(),
+                  // Disable PageView scrolling on mobile to avoid conflict with content scrolling
+                  physics: isMobile
+                      ? const AlwaysScrollableScrollPhysics()
+                      : const ClampingScrollPhysics(),
                   onPageChanged: (page) {
                     if (mounted) {
                       setState(() => _currentPage = page);
                     }
                   },
                   children: const [
-                    AboutSection(),
                     ProjectsSection(),
-                    ContactSection(), // Now properly using the 3rd page
+                    AboutSection(),
+                    ContactSection(),
                   ],
                 ),
               ),
+              // Mobile bottom navigation bar
+              if (isMobile) _buildMobileBottomNav(),
             ],
           ),
+
           // Page indicators (Desktop only)
           if (Responsive.isDesktop(context)) _buildPageIndicators(),
         ],
@@ -121,17 +129,17 @@ class _HomePageState extends State<HomePage> {
           ),
           const Spacer(),
 
-          // Navigation buttons (Desktop/Tablet)
+          // Navigation buttons (Desktop/Tablet only)
           if (!isMobile) ...[
-            _NavButton(
-              label: 'ABOUT',
-              isActive: _currentPage == 0,
-              onPressed: () => _navigateToPage(0),
-            ),
             _NavButton(
               label: 'PROJECTS',
               isActive: _currentPage == 1,
               onPressed: () => _navigateToPage(1),
+            ),
+            _NavButton(
+              label: 'ABOUT',
+              isActive: _currentPage == 0,
+              onPressed: () => _navigateToPage(0),
             ),
             _NavButton(
               label: 'CONTACT',
@@ -140,36 +148,84 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
 
-          // Mobile menu
+          // Mobile: just show current page name
           if (isMobile)
-            PopupMenuButton<int>(
-              icon: const Icon(Icons.menu, color: Colors.white),
-              color: const Color(0xFF1A1A1A),
-              onSelected: _navigateToPage,
-              itemBuilder: (context) => [
-                _buildMenuItem('ABOUT', 0),
-                _buildMenuItem('PROJECTS', 1),
-                _buildMenuItem('CONTACT', 2),
-              ],
+            Text(
+              _currentPage == 0
+                  ? 'PROJECTS'
+                  : _currentPage == 1
+                  ? 'ABOUT'
+                  : 'CONTACT',
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                color: AppColors.primaryCyan,
+                letterSpacing: 2,
+                fontWeight: FontWeight.w600,
+              ),
             ),
         ],
       ),
     );
   }
 
-  PopupMenuItem<int> _buildMenuItem(String label, int value) {
-    return PopupMenuItem<int>(
-      value: value,
-      child: Text(
-        label,
-        style: GoogleFonts.inter(
-          color: _currentPage == value ? AppColors.primaryCyan : Colors.white,
-          fontWeight: _currentPage == value ? FontWeight.w600 : FontWeight.w400,
-          letterSpacing: 1.5,
+  Widget _buildMobileBottomNav() {
+    return Container(
+      height: 65,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.9),
+        border: Border(
+          top: BorderSide(color: Colors.white.withOpacity(0.1), width: 1),
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _MobileNavItem(
+            icon: Icons.work_outline,
+            activeIcon: Icons.work,
+            label: 'Projects',
+            isActive: _currentPage == 0,
+            onTap: () => _navigateToPage(0),
+          ),
+          _MobileNavItem(
+            icon: Icons.person_outline,
+            activeIcon: Icons.person,
+            label: 'About',
+            isActive: _currentPage == 1,
+            onTap: () => _navigateToPage(1),
+          ),
+          _MobileNavItem(
+            icon: Icons.mail_outline,
+            activeIcon: Icons.mail,
+            label: 'Contact',
+            isActive: _currentPage == 2,
+            onTap: () => _navigateToPage(2),
+          ),
+        ],
       ),
     );
   }
+
+  // PopupMenuItem<int> _buildMenuItem(String label, int value) {
+  //   return PopupMenuItem<int>(
+  //     value: value,
+  //     child: Text(
+  //       label,
+  //       style: GoogleFonts.inter(
+  //         color: _currentPage == value ? AppColors.primaryCyan : Colors.white,
+  //         fontWeight: _currentPage == value ? FontWeight.w600 : FontWeight.w400,
+  //         letterSpacing: 1.5,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildPageIndicators() {
     return Positioned(
@@ -207,6 +263,63 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           }),
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileNavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _MobileNavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: AppAnimations.fast,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedSwitcher(
+              duration: AppAnimations.fast,
+              child: Icon(
+                isActive ? activeIcon : icon,
+                key: ValueKey(isActive),
+                color: isActive
+                    ? AppColors.primaryCyan
+                    : Colors.white.withOpacity(0.5),
+                size: 26,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                color: isActive
+                    ? AppColors.primaryCyan
+                    : Colors.white.withOpacity(0.5),
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
         ),
       ),
     );
