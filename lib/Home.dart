@@ -24,9 +24,7 @@ class _HomePageState extends State<HomePage> {
   bool _handleScrollNotification(ScrollNotification notification) {
     if (_hasNavigated) return false;
 
-    // When user tries to scroll but can't because they're at the edge
     if (notification is OverscrollNotification) {
-      // overscroll > 0 means trying to scroll down past bottom
       if (notification.overscroll > 20) {
         _hasNavigated = true;
         if (widget.onNavigate != null) {
@@ -36,14 +34,12 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    // Additional check for when scroll reaches maximum extent
     if (notification is ScrollUpdateNotification) {
       if (_scrollController.hasClients) {
         final isAtBottom =
             _scrollController.position.pixels >=
             _scrollController.position.maxScrollExtent;
 
-        // If at bottom and trying to scroll more
         if (isAtBottom &&
             notification.scrollDelta != null &&
             notification.scrollDelta! < 0) {
@@ -63,7 +59,6 @@ class _HomePageState extends State<HomePage> {
     if (_hasNavigated) return;
 
     if (event is PointerScrollEvent) {
-      // Check if at bottom and trying to scroll down
       if (_scrollController.hasClients) {
         final isAtBottom =
             _scrollController.position.pixels >=
@@ -112,10 +107,6 @@ class _HomePageState extends State<HomePage> {
               ),
               child: Column(
                 children: [
-                  // Non-scrollable photo section
-                  PhotoSection(isMobile: isMobile),
-
-                  // Scrollable hero section with overscroll detection
                   Expanded(
                     child: NotificationListener<ScrollNotification>(
                       onNotification: _handleScrollNotification,
@@ -136,7 +127,6 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         } else {
-          // Desktop/Tablet layout
           return NotificationListener<ScrollNotification>(
             onNotification: _handleScrollNotification,
             child: SingleChildScrollView(
@@ -160,18 +150,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: HeroSection(
-                            isMobile: isMobile,
-                            isTablet: isTablet,
-                          ),
-                        ),
-                        Expanded(child: PhotoSection(isMobile: isMobile)),
-                      ],
-                    ),
+                    child: HeroSection(isMobile: isMobile, isTablet: isTablet),
                   ),
                 ),
               ),

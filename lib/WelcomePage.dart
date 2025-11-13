@@ -97,61 +97,260 @@ class _NavButton extends StatelessWidget {
   }
 }
 
-class PhotoSection extends StatelessWidget {
+class HeroSection extends StatefulWidget {
   final bool isMobile;
+  final bool isTablet;
 
-  const PhotoSection({Key? key, required this.isMobile}) : super(key: key);
+  const HeroSection({required this.isMobile, required this.isTablet});
+
+  @override
+  State<HeroSection> createState() => _HeroSectionState();
+}
+
+class _HeroSectionState extends State<HeroSection>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final skills = [
+      {
+        'name': 'C',
+        'icon': FontAwesomeIcons.c,
+        'color': const Color(0xFF5C6BC0),
+      },
+      {
+        'name': 'C++',
+        'icon': FontAwesomeIcons.code,
+        'color': const Color(0xFF3F51B5),
+      },
+      {
+        'name': 'Dart',
+        'icon': FontAwesomeIcons.dartLang,
+        'color': const Color(0xFF00ACC1),
+      },
+      {
+        'name': 'Python',
+        'icon': FontAwesomeIcons.python,
+        'color': const Color(0xFF0097A7),
+      },
+      {
+        'name': 'Swift',
+        'icon': FontAwesomeIcons.swift,
+        'color': const Color(0xFFFF6F00),
+      },
+    ];
+
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(isMobile ? 40 : 60),
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: isMobile ? 300 : 700,
-          maxHeight: isMobile ? 300 : 700,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
+      padding: EdgeInsets.all(widget.isMobile ? 24 : 80),
+      child: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: widget.isMobile ? 340 : (widget.isTablet ? 900 : 1200),
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Image.asset(
-            'assets/images/n.jpg',
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: Colors.white.withOpacity(0.1),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.person,
-                        size: isMobile ? 100 : 150,
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Add your photo here',
-                        style: GoogleFonts.abrilFatface(
-                          fontSize: isMobile ? 18 : 24,
-                          color: Colors.white.withOpacity(0.7),
-                        ),
-                      ),
-                    ],
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.black.withOpacity(0.4),
+                  Colors.black.withOpacity(0.2),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 30,
+                  offset: const Offset(0, 15),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.all(
+              widget.isMobile ? 32 : (widget.isTablet ? 56 : 64),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Meet label with accent
+                Text(
+                  'MEET',
+                  style: GoogleFonts.abrilFatface(
+                    fontSize: getFontSize(
+                      14,
+                      16,
+                      18,
+                      widget.isMobile,
+                      widget.isTablet,
+                    ),
+                    color: Colors.white.withOpacity(0.6),
+                    letterSpacing: 3,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              );
-            },
+                const SizedBox(height: 16),
+
+                // Name with gradient
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [Colors.white, Colors.white.withOpacity(0.8)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds),
+                  child: Text(
+                    'HAN',
+                    style: GoogleFonts.abrilFatface(
+                      fontSize: getFontSize(
+                        80,
+                        100,
+                        120,
+                        widget.isMobile,
+                        widget.isTablet,
+                      ),
+                      color: Colors.white,
+                      height: 0.95,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 4,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Title with accent color
+                Text(
+                  'Mobile App Developer',
+                  style: GoogleFonts.abrilFatface(
+                    fontSize: getFontSize(
+                      18,
+                      22,
+                      26,
+                      widget.isMobile,
+                      widget.isTablet,
+                    ),
+                    color: const Color(0xFF00BCD4),
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Bio with better readability
+                Text(
+                  '''I'm a recent Computer Science graduate with First Class Honours from Coventry University. Currently honing my coding skills at 42 Singapore, I'm passionate about mobile app development. I have experience with Swift and am now focusing on Flutter for cross-platform applications, as well as Python for backend development.''',
+                  style: GoogleFonts.inter(
+                    fontSize: getFontSize(
+                      15,
+                      17,
+                      19,
+                      widget.isMobile,
+                      widget.isTablet,
+                    ),
+                    color: Colors.white.withOpacity(0.85),
+                    height: 1.7,
+                    letterSpacing: 0.3,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+                const SizedBox(height: 40),
+
+                // Skills header
+                Row(
+                  children: [
+                    Container(
+                      width: 4,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF00BCD4),
+                            const Color(0xFF0097A7),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Text(
+                      'Technical Skills',
+                      style: GoogleFonts.abrilFatface(
+                        fontSize: getFontSize(
+                          24,
+                          28,
+                          32,
+                          widget.isMobile,
+                          widget.isTablet,
+                        ),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Enhanced skill chips
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  alignment: WrapAlignment.start,
+                  children: skills.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final skill = entry.value;
+                    return TweenAnimationBuilder(
+                      duration: Duration(milliseconds: 600 + (index * 100)),
+                      tween: Tween<double>(begin: 0, end: 1),
+                      curve: Curves.easeOutBack,
+                      builder: (context, double value, child) {
+                        return Transform.scale(
+                          scale: value,
+                          child: _SkillChip(
+                            skill: skill,
+                            isMobile: widget.isMobile,
+                            isTablet: widget.isTablet,
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -159,137 +358,89 @@ class PhotoSection extends StatelessWidget {
   }
 }
 
-class HeroSection extends StatelessWidget {
+class _SkillChip extends StatefulWidget {
+  final Map<String, dynamic> skill;
   final bool isMobile;
   final bool isTablet;
 
-  const HeroSection({required this.isMobile, required this.isTablet});
+  const _SkillChip({
+    required this.skill,
+    required this.isMobile,
+    required this.isTablet,
+  });
+
+  @override
+  State<_SkillChip> createState() => _SkillChipState();
+}
+
+class _SkillChipState extends State<_SkillChip> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    final skills = [
-      {'name': 'C', 'icon': FontAwesomeIcons.c, 'color': Colors.blue},
-      {'name': 'C++', 'icon': FontAwesomeIcons.code, 'color': Colors.indigo},
-      {'name': 'Dart', 'icon': FontAwesomeIcons.dartLang, 'color': Colors.teal},
-      {'name': 'Python', 'icon': FontAwesomeIcons.python, 'color': Colors.cyan},
-      {'name': 'Swift', 'icon': FontAwesomeIcons.swift, 'color': Colors.orange},
-    ];
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(isMobile ? 40 : 60),
-      child: Container(
-        constraints: BoxConstraints(maxWidth: isMobile ? 300 : 700),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(
+          horizontal: getFontSize(16, 20, 24, widget.isMobile, widget.isTablet),
+          vertical: getFontSize(10, 12, 14, widget.isMobile, widget.isTablet),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: _isHovered
+                ? [
+                    (widget.skill['color'] as Color),
+                    (widget.skill['color'] as Color).withOpacity(0.7),
+                  ]
+                : [
+                    (widget.skill['color'] as Color).withOpacity(0.2),
+                    (widget.skill['color'] as Color).withOpacity(0.1),
+                  ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: (widget.skill['color'] as Color).withOpacity(
+              _isHovered ? 0.8 : 0.3,
+            ),
+            width: 1.5,
+          ),
+          boxShadow: _isHovered
+              ? [
+                  BoxShadow(
+                    color: (widget.skill['color'] as Color).withOpacity(0.4),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [],
+        ),
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: EdgeInsets.only(right: isMobile ? 150 : 170),
-              child: Text(
-                'MEET',
-                style: GoogleFonts.abrilFatface(
-                  fontSize: getFontSize(18, 22, 32, isMobile, isTablet),
-                  color: Colors.white,
-                  letterSpacing: 2,
-                  height: isMobile ? 1 : 0.1,
+            Icon(
+              widget.skill['icon'] as IconData,
+              color: Colors.white,
+              size: getFontSize(18, 22, 24, widget.isMobile, widget.isTablet),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              widget.skill['name'] as String,
+              style: GoogleFonts.inter(
+                fontSize: getFontSize(
+                  14,
+                  16,
+                  18,
+                  widget.isMobile,
+                  widget.isTablet,
                 ),
-              ),
-            ),
-            Text(
-              'HAN',
-              style: GoogleFonts.abrilFatface(
-                fontSize: getFontSize(94, 110, 128, isMobile, isTablet),
                 color: Colors.white,
-                height: 0.9,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.5,
               ),
-            ),
-            Text(
-              'Mobile App Developer',
-              style: GoogleFonts.abrilFatface(
-                fontSize: getFontSize(19, 23, 26, isMobile, isTablet),
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 40),
-            Text(
-              '''I’m a recent Computer Science graduate with First Class Honours from Coventry University. Currently honing my coding skills at 42 Singapore, I’m passionate about mobile app development. I have experience with Swift and am now focusing on Flutter for cross-platform applications, as well as Python for backend development.''',
-              style: GoogleFonts.abrilFatface(
-                fontSize: getFontSize(18, 22, 24, isMobile, isTablet),
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.justify,
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Skills',
-              style: GoogleFonts.abrilFatface(
-                fontSize: getFontSize(28, 32, 36, isMobile, isTablet),
-                color: Colors.white,
-              ),
-            ),
-            SizedBox(height: 20),
-            Wrap(
-              spacing: 15,
-              runSpacing: 15,
-              alignment: WrapAlignment.start,
-              children: skills.map((skill) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: getFontSize(20, 25, 30, isMobile, isTablet),
-                    vertical: getFontSize(12, 15, 18, isMobile, isTablet),
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        (skill['color'] as Color).withOpacity(0.8),
-                        (skill['color'] as Color),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: (skill['color'] as Color).withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        skill['icon'] as IconData,
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                        size: getFontSize(20, 24, 28, isMobile, isTablet),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        skill['name'] as String,
-                        style: GoogleFonts.abrilFatface(
-                          fontSize: getFontSize(16, 20, 24, isMobile, isTablet),
-                          color: Colors.white,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
             ),
           ],
         ),
