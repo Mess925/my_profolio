@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   // Disable PageView scrolling on mobile to avoid conflict with content scrolling
                   physics: isMobile
                       ? const AlwaysScrollableScrollPhysics()
-                      : const ClampingScrollPhysics(),
+                      : const AlwaysScrollableScrollPhysics(),
                   onPageChanged: (page) {
                     if (mounted) {
                       setState(() => _currentPage = page);
@@ -134,12 +134,12 @@ class _HomePageState extends State<HomePage> {
             _NavButton(
               label: 'PROJECTS',
               isActive: _currentPage == 0,
-              onPressed: () => _navigateToPage(1),
+              onPressed: () => _navigateToPage(0),
             ),
             _NavButton(
               label: 'ABOUT',
               isActive: _currentPage == 1,
-              onPressed: () => _navigateToPage(0),
+              onPressed: () => _navigateToPage(1),
             ),
             _NavButton(
               label: 'CONTACT',
